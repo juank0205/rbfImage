@@ -1,8 +1,10 @@
 #pragma once
+#include <array>
 
 class ImageHandler {
 public:
   ImageHandler();
   ~ImageHandler();
-  void print();
+  
+  int loadImageAsBits(const char *filename, std::array<unsigned char, 256> &bitData);
 };
