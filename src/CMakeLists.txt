@@ -1,6 +1,8 @@
 add_library(${PROJECT_NAME}_lib STATIC 
     stb_image/stb_image.cpp
     image_handler.cpp
+    neural_network.cpp
+    neuron.cpp
 )
 
 target_include_directories(${PROJECT_NAME}_lib PUBLIC 
