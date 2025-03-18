@@ -7,7 +7,7 @@ ImageHandler::ImageHandler() {}
 ImageHandler::~ImageHandler() {}
 
 int ImageHandler::loadImageAsBits(const char *filename,
-                                  std::array<unsigned char, 256> &bitData) {
+                                  std::array<unsigned char, INPUT_LAYER_SIZE> &bitData) {
   int channels, width, height;
   unsigned char *data = stbi_load(filename, &width, &height, &channels, 1);
 
@@ -22,7 +22,7 @@ int ImageHandler::loadImageAsBits(const char *filename,
     return 1;
   }
 
-  for (int i = 0; i < 256; ++i) {
+  for (int i = 0; i < INPUT_LAYER_SIZE; ++i) {
     bitData[i] = (data[i] == 0) ? 1 : 0; 
   }
 

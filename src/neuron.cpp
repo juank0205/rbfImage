@@ -1,6 +1,7 @@
 #include "neuron.h"
 
 #include <iostream>
+#include <math.h>
 
 Neuron::Neuron() {}
 
@@ -10,7 +11,7 @@ Neuron::Neuron(std::array<unsigned char, INPUT_LAYER_SIZE> location)
 
 
 void Neuron::printLocation() {
-  for (int i = 0; i < 256; ++i) {
+  for (int i = 0; i < INPUT_LAYER_SIZE; ++i) {
     std::cout << static_cast<int>(m_location[i]);
     if ((i + 1) % 16 == 0) {
       std::cout << std::endl;
@@ -20,7 +21,7 @@ void Neuron::printLocation() {
 
 double Neuron::activationFunction(const std::array<unsigned char, INPUT_LAYER_SIZE> &input){
   double distance = 0;
-  for(int i=0; i<256; i++){
+  for(int i=0; i<INPUT_LAYER_SIZE; i++){
     distance += pow(m_location[i]-input[i],2);
   }
   // distance = sqrt(distance);
