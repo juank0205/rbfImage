@@ -3,6 +3,7 @@ add_library(${PROJECT_NAME}_lib STATIC
     image_handler.cpp
     neural_network.cpp
     neuron.cpp
+    application.cpp
 )
 
 target_include_directories(${PROJECT_NAME}_lib PUBLIC 
