@@ -36,7 +36,7 @@ int NeuralNetwork::readImagesDir(const char *imagesDir) {
   std::string line;
   int trainingIndex = 0;
 
-  while (std::getline(inputFile, line) && trainingIndex < HIDDEN_LAYER_SIZE) {
+  while (std::getline(inputFile, line) && trainingIndex < TRAINING_DATA_SIZE) {
     std::stringstream ss(line);
     std::string filename, outputsStr;
 
@@ -80,17 +80,17 @@ int NeuralNetwork::readImagesDir(const char *imagesDir) {
     trainingIndex++;
   }
 
-  if (trainingIndex != HIDDEN_LAYER_SIZE) {
+  if (trainingIndex != TRAINING_DATA_SIZE) {
     std::cerr
         << "Warning: outputs.txt did not contain enough training data. Loaded: "
-        << trainingIndex << " expected: " << HIDDEN_LAYER_SIZE << std::endl;
+        << trainingIndex << " expected: " << TRAINING_DATA_SIZE << std::endl;
   }
 
   return 0;
 }
 
 void NeuralNetwork::printTrainingImages() {
-  for (int i = 0; i < HIDDEN_LAYER_SIZE; ++i) {
+  for (int i = 0; i < TRAINING_DATA_SIZE; ++i) {
     std::cout << "Training Image " << i << ":" << std::endl;
 
     // Print the image data (16x16 grid)
@@ -168,7 +168,7 @@ void NeuralNetwork::printNeurons() {
 }
 
 void NeuralNetwork::fastForward() {
-  for (int i = 0; i < HIDDEN_LAYER_SIZE; i++) {
+  for (int i = 0; i < TRAINING_DATA_SIZE; i++) {
     for (int j = 0; j < HIDDEN_LAYER_SIZE; j++) {
       m_hiddenLayerActivationValues[i][j] =
           m_neurons[j].activationFunction(m_trainingImages[i].image);
@@ -177,33 +177,34 @@ void NeuralNetwork::fastForward() {
 }
 
 void NeuralNetwork::solveWeightsMatrix() {
-  Eigen::MatrixXd hValues(HIDDEN_LAYER_SIZE, HIDDEN_LAYER_SIZE);
-  for (int i = 0; i < HIDDEN_LAYER_SIZE; i++) {
+  Eigen::MatrixXd hValues(TRAINING_DATA_SIZE, HIDDEN_LAYER_SIZE);
+  for (int i = 0; i < TRAINING_DATA_SIZE; i++) {
     for (int j = 0; j < HIDDEN_LAYER_SIZE; j++) {
       hValues(i, j) = m_hiddenLayerActivationValues[i][j];
     }
   }
+  /*
   std::cout << hValues << std::endl;
-  Eigen::MatrixXd expectedValues(HIDDEN_LAYER_SIZE, OUTPUT_LAYER_SIZE);
-  for (int i = 0; i < HIDDEN_LAYER_SIZE; i++) {
+  */
+  Eigen::MatrixXd expectedValues(TRAINING_DATA_SIZE, OUTPUT_LAYER_SIZE);
+  for (int i = 0; i < TRAINING_DATA_SIZE; i++) {
     for (int j = 0; j < OUTPUT_LAYER_SIZE; j++) {
       expectedValues(i, j) = m_trainingImages[i].outputs[j];
     }
   }
+  /*
   std::cout << expectedValues << std::endl;
   std::cout << hValues.inverse() * expectedValues.transpose() << std::endl;
   std::cout << hValues.completeOrthogonalDecomposition().pseudoInverse()
             << std::endl;
-  m_weightsMat = (hValues.inverse() * expectedValues.transpose()).transpose();
-  for (int i = 0; i < OUTPUT_LAYER_SIZE; i++) {
-    for (int j = 0; j < HIDDEN_LAYER_SIZE; j++) {
-      m_weights[i][j] = m_weightsMat(i, j);
-    }
-  }
+  */
+  m_weightsMat = (hValues.completeOrthogonalDecomposition().pseudoInverse() *
+                  expectedValues.transpose())
+                     .transpose();
 }
 
 void NeuralNetwork::classify(const char *inputImage) {
-  std::array<unsigned char, 256> inputImageArr;
+  std::array<unsigned char, INPUT_LAYER_SIZE> inputImageArr;
   m_imageHandler.loadImageAsBits(inputImage, inputImageArr);
   Eigen::VectorXd activationValues(HIDDEN_LAYER_SIZE);
   for (int i = 0; i < HIDDEN_LAYER_SIZE; i++) {
