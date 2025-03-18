@@ -10,8 +10,7 @@ public:
   Neuron();
   ~Neuron();
 
-  double
-  activationFunction(const std::array<unsigned char, INPUT_LAYER_SIZE> &input);
+  double activationFunction(const std::array<unsigned char, INPUT_LAYER_SIZE> &input);
 
   void printLocation();
 private:

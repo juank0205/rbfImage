@@ -1,5 +1,6 @@
 #include "neuron.h"
 
+#include <bits/stdc++.h>
 #include <iostream>
 
 Neuron::Neuron() {}
@@ -8,10 +9,6 @@ Neuron::~Neuron() {}
 Neuron::Neuron(std::array<unsigned char, INPUT_LAYER_SIZE> location)
     : m_location(location) {}
 
-double Neuron::activationFunction(
-    const std::array<unsigned char, INPUT_LAYER_SIZE> &input) {
-  return 0;
-}
 
 void Neuron::printLocation() {
   for (int i = 0; i < 256; ++i) {
@@ -20,4 +17,13 @@ void Neuron::printLocation() {
       std::cout << std::endl;
     }
   }
+}
+
+double Neuron::activationFunction(const std::array<unsigned char, INPUT_LAYER_SIZE> &input){
+  double distance = 0;
+  for(int i=0; i<256; i++){
+    distance += pow(m_location[i]-input[i],2);
+  }
+  // distance = sqrt(distance);
+  return exp(-distance/(2*NEURON_RADIUS));
 }

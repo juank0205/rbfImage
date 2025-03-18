@@ -34,6 +34,8 @@ private:
 
   int readImagesDir(const char *imagesDir); // rellenar training Images
 
+  void fastForward();
+  void solveWeightsMatrix();
   void loadLocations(const char *locationsDir);
   void saveWeights();
   void loadWeights();
