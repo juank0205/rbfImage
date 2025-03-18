@@ -6,8 +6,6 @@
 #include <sstream>
 #include <string>
 
-#include <vec3.hpp>
-
 NeuralNetwork::NeuralNetwork(const char *locationsDir) {
   loadLocations(locationsDir);
 }
