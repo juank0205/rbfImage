@@ -17,23 +17,23 @@ void Application::menu() {
               << "0. Exit\n"
               << "Enter your choice: ";
     std::cin >> option;
-  
+
     switch (option) {
-      case 1: 
-        handleTrain();
-        break;
-      case 2: 
-        handleLoadWeights();
-        break;
-      case 3: 
-        handleClassify();
-        break;
-      case 0:
-        std::cout << "Seeya..." << std::endl;
-        break;
-      default:
-        std::cout << "Select a valid option..." << std::endl;
-        break;
+    case 1:
+      handleTrain();
+      break;
+    case 2:
+      handleLoadWeights();
+      break;
+    case 3:
+      handleClassify();
+      break;
+    case 0:
+      std::cout << "Seeya..." << std::endl;
+      break;
+    default:
+      std::cout << "Select a valid option..." << std::endl;
+      break;
     }
   }
 }
@@ -45,13 +45,18 @@ void Application::handleTrain() {
 
 void Application::handleLoadWeights() {
   std::cout << "Loading weights from file..." << std::endl;
-  //TODO falta eso
+  // TODO falta eso
 }
 
 void Application::handleClassify() {
   std::string filename;
   std::cout << "Enter the input file name: ";
   std::cin >> filename;
+  filename = "res/testimages/" + filename;
   std::cout << "Processing input..." << std::endl;
-  m_neuralNetwork.classify(filename.c_str());
+  int bestClassificationIndex = m_neuralNetwork.classify(filename.c_str());
+  if (bestClassificationIndex < 0) {
+    std::cout << "Classification failed..." << std::endl;
+  }
+  std::cout << "Classification: " << bestClassificationIndex + 1 << std::endl;
 }
