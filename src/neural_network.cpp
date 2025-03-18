@@ -178,6 +178,8 @@ void NeuralNetwork::solveWeightsMatrix() {
   }
   std::cout<< expectedValues <<std::endl;
   std::cout<< hValues.inverse() * expectedValues.transpose() << std::endl;
+  std::cout<< "podria serrrr chicosss????????"<<std::endl;
+  std::cout<< hValues.completeOrthogonalDecomposition().pseudoInverse() <<std::endl;
   m_weightsMat = (hValues.inverse() * expectedValues.transpose()).transpose();
   for(int i=0; i<OUTPUT_LAYER_SIZE; i++){
     for(int j=0; j<HIDDEN_LAYER_SIZE; j++){
