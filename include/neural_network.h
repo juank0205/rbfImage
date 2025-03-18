@@ -33,10 +33,9 @@ private:
   bool m_areWeightsLoaded;
 
   int readImagesDir(const char *imagesDir); // rellenar training Images
-
+  int loadLocations(const char *locationsDir);
   void fastForward();
   void solveWeightsMatrix();
-  void loadLocations(const char *locationsDir);
   void saveWeights();
   void loadWeights();
 };

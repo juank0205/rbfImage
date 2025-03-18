@@ -1,11 +1,11 @@
 #include "neural_network.h"
+#include "constants.h"
 
-#include <filesystem>
+#include <Eigen/Dense>
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <Eigen/Dense>
 
 NeuralNetwork::NeuralNetwork(const char *locationsDir) {
   loadLocations(locationsDir);
@@ -115,34 +115,50 @@ void NeuralNetwork::printTrainingImages() {
   }
 }
 
-void NeuralNetwork::loadLocations(const char *locationsDir) {
-  std::filesystem::path dirPath(locationsDir);
-  int neuronIndex = 0;
+int NeuralNetwork::loadLocations(const char *locationsDir) {
+  std::string outputsFilePath = std::string(locationsDir) + "/locations.txt";
+  std::ifstream inputFile(outputsFilePath);
 
-  for (const auto &entry : std::filesystem::directory_iterator(dirPath)) {
-    if (neuronIndex >= HIDDEN_LAYER_SIZE) {
-      break; // Stop if we have loaded enough neurons
-    }
-
-    if (entry.is_regular_file() && entry.path().extension() == ".png") {
-      int width, height;
-      std::array<unsigned char, 256> imageData;
-
-      if (m_imageHandler.loadImageAsBits(entry.path().string().c_str(),
-                                         imageData)) {
-        std::cerr << "Error: Failed to load image: " << entry.path().string()
-                  << std::endl;
-      }
-
-      m_neurons[neuronIndex] = Neuron(imageData);
-      neuronIndex++;
-    }
+  if (!inputFile.is_open()) {
+    std::cerr << "Error: Could not open locations.txt in directory: "
+              << locationsDir << std::endl;
+    return 1;
   }
 
-  if (neuronIndex != HIDDEN_LAYER_SIZE) {
-    std::cerr << "Warning: Directory did not contain enough images. Loaded: "
-              << neuronIndex << " expected: " << HIDDEN_LAYER_SIZE << std::endl;
+  std::string line;
+  int locationsIndex = 0;
+  std::array<unsigned char, INPUT_LAYER_SIZE> locationBuffer;
+
+  while (std::getline(inputFile, line) && locationsIndex < HIDDEN_LAYER_SIZE) {
+    std::stringstream ss(line);
+    std::string filename;
+
+    if (!std::getline(ss, filename)) {
+      std::cerr << "Error: Invalid line format in locations.txt: " << line
+                << std::endl;
+      return 1;
+    }
+
+    std::string imageFilePath = std::string(locationsDir) + "/" + filename;
+
+    int width, height;
+    if (m_imageHandler.loadImageAsBits(imageFilePath.c_str(), locationBuffer)) {
+      std::cerr << "Error: Failed to load image: " << imageFilePath
+                << std::endl;
+      return 1;
+    }
+    m_neurons[locationsIndex] = Neuron(locationBuffer);
+
+    locationsIndex++;
   }
+
+  if (locationsIndex != HIDDEN_LAYER_SIZE) {
+    std::cerr
+        << "Warning: locations.txt did not contain enough data. Loaded: "
+        << locationsIndex << " expected: " << HIDDEN_LAYER_SIZE << std::endl;
+  }
+
+  return 0;
 }
 
 void NeuralNetwork::printNeurons() {
@@ -152,30 +168,31 @@ void NeuralNetwork::printNeurons() {
 }
 
 void NeuralNetwork::fastForward() {
-  std::cout<<"hastadonde?"<<std::endl;
-  for(int i=0; i<HIDDEN_LAYER_SIZE; i++){
-    for(int j=0; j<HIDDEN_LAYER_SIZE; j++){
-      std::cout<<"uy"<<std::endl;
-      m_hiddenLayerActivationValues[i][j] = m_neurons[j].activationFunction(m_trainingImages[i].image);
+  std::cout << "hastadonde?" << std::endl;
+  for (int i = 0; i < HIDDEN_LAYER_SIZE; i++) {
+    for (int j = 0; j < HIDDEN_LAYER_SIZE; j++) {
+      std::cout << "uy" << std::endl;
+      m_hiddenLayerActivationValues[i][j] =
+          m_neurons[j].activationFunction(m_trainingImages[i].image);
     }
   }
-  std::cout<<"hastadonde?"<<std::endl;
+  std::cout << "hastadonde?" << std::endl;
 }
 
 void NeuralNetwork::solveWeightsMatrix() {
   Eigen::MatrixXd hValues(HIDDEN_LAYER_SIZE, HIDDEN_LAYER_SIZE);
-  for(int i=0; i<HIDDEN_LAYER_SIZE; i++){
-    for(int j=0; j<HIDDEN_LAYER_SIZE; j++){
-      hValues(i,j) = m_hiddenLayerActivationValues[i][j];
+  for (int i = 0; i < HIDDEN_LAYER_SIZE; i++) {
+    for (int j = 0; j < HIDDEN_LAYER_SIZE; j++) {
+      hValues(i, j) = m_hiddenLayerActivationValues[i][j];
     }
   }
-  std::cout << hValues <<std::endl;
-  std::cout<<"penedemonoooooo"<<std::endl;
+  std::cout << hValues << std::endl;
+  std::cout << "penedemonoooooo" << std::endl;
   Eigen::MatrixXd expectedValues(HIDDEN_LAYER_SIZE, OUTPUT_LAYER_SIZE);
-  for(int i=0; i<HIDDEN_LAYER_SIZE; i++){
-    for(int j=0; j<OUTPUT_LAYER_SIZE; j++){
-      expectedValues(i,j) = m_trainingImages[i].outputs[j];
+  for (int i = 0; i < HIDDEN_LAYER_SIZE; i++) {
+    for (int j = 0; j < OUTPUT_LAYER_SIZE; j++) {
+      expectedValues(i, j) = m_trainingImages[i].outputs[j];
     }
   }
-  std::cout<< expectedValues <<std::endl;
+  std::cout << expectedValues << std::endl;
 }
