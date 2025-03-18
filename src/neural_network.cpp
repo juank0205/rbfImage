@@ -155,7 +155,6 @@ void NeuralNetwork::fastForward() {
   std::cout<<"hastadonde?"<<std::endl;
   for(int i=0; i<HIDDEN_LAYER_SIZE; i++){
     for(int j=0; j<HIDDEN_LAYER_SIZE; j++){
-      std::cout<<"uy"<<std::endl;
       m_hiddenLayerActivationValues[i][j] = m_neurons[j].activationFunction(m_trainingImages[i].image);
     }
   }
@@ -178,4 +177,26 @@ void NeuralNetwork::solveWeightsMatrix() {
     }
   }
   std::cout<< expectedValues <<std::endl;
+  std::cout<< hValues.inverse() * expectedValues.transpose() << std::endl;
+  std::cout<< "podria serrrr chicosss????????"<<std::endl;
+  std::cout<< hValues.completeOrthogonalDecomposition().pseudoInverse() <<std::endl;
+  m_weightsMat = (hValues.inverse() * expectedValues.transpose()).transpose();
+  for(int i=0; i<OUTPUT_LAYER_SIZE; i++){
+    for(int j=0; j<HIDDEN_LAYER_SIZE; j++){
+      m_weights[i][j] = m_weightsMat(i, j);
+    }
+  }
+}
+
+
+void NeuralNetwork::classify(const char *inputImage){
+  std::array<unsigned char, 256> inputImageArr;
+  m_imageHandler.loadImageAsBits(inputImage, inputImageArr);
+  Eigen::VectorXd activationValues(HIDDEN_LAYER_SIZE);
+  for(int i=0; i<HIDDEN_LAYER_SIZE; i++){
+      activationValues(i) = m_neurons[i].activationFunction(inputImageArr);
+  }
+  std::cout<<"OKKKK CHICOSSS PUEDESER??"<<std::endl;
+  std::cout<<m_weightsMat * activationValues<<std::endl;
+
 }
