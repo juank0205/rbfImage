@@ -4,8 +4,8 @@
 #include "image_handler.h"
 #include "neuron.h"
 
-#include <array>
 #include <Eigen/Dense>
+#include <array>
 
 struct TrainingData {
   std::array<unsigned char, 256> image;
@@ -25,12 +25,10 @@ public:
 
 private:
   ImageHandler m_imageHandler;
-  std::array<TrainingData, HIDDEN_LAYER_SIZE> m_trainingImages;
+  std::array<TrainingData, TRAINING_DATA_SIZE> m_trainingImages;
   std::array<Neuron, HIDDEN_LAYER_SIZE> m_neurons;
-  std::array<std::array<double, HIDDEN_LAYER_SIZE>, OUTPUT_LAYER_SIZE>
-      m_weights;
   Eigen::MatrixXd m_weightsMat;
-  std::array<std::array<double, HIDDEN_LAYER_SIZE>, INPUT_LAYER_SIZE>
+  std::array<std::array<double, HIDDEN_LAYER_SIZE>, TRAINING_DATA_SIZE>
       m_hiddenLayerActivationValues;
   bool m_areWeightsLoaded;
 

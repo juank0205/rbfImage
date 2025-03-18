@@ -1,5 +1,6 @@
 #pragma once
 
+#define TRAINING_DATA_SIZE 10
 #define HIDDEN_LAYER_SIZE 5
 #define OUTPUT_LAYER_SIZE 5
 #define INPUT_LAYER_SIZE 256
