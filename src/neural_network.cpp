@@ -5,6 +5,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <Eigen/Dense>
 
 NeuralNetwork::NeuralNetwork(const char *locationsDir) {
   loadLocations(locationsDir);
@@ -17,6 +18,8 @@ void NeuralNetwork::train(const char *imagesDir) {
     std::cout << "Failed to load training data" << std::endl;
     return;
   }
+  fastForward();
+  solveWeightsMatrix();
   // TODO el resto
 }
 
@@ -146,4 +149,33 @@ void NeuralNetwork::printNeurons() {
   for (auto neuron : m_neurons) {
     neuron.printLocation();
   }
+}
+
+void NeuralNetwork::fastForward() {
+  std::cout<<"hastadonde?"<<std::endl;
+  for(int i=0; i<HIDDEN_LAYER_SIZE; i++){
+    for(int j=0; j<HIDDEN_LAYER_SIZE; j++){
+      std::cout<<"uy"<<std::endl;
+      m_hiddenLayerActivationValues[i][j] = m_neurons[j].activationFunction(m_trainingImages[i].image);
+    }
+  }
+  std::cout<<"hastadonde?"<<std::endl;
+}
+
+void NeuralNetwork::solveWeightsMatrix() {
+  Eigen::MatrixXd hValues(HIDDEN_LAYER_SIZE, HIDDEN_LAYER_SIZE);
+  for(int i=0; i<HIDDEN_LAYER_SIZE; i++){
+    for(int j=0; j<HIDDEN_LAYER_SIZE; j++){
+      hValues(i,j) = m_hiddenLayerActivationValues[i][j];
+    }
+  }
+  std::cout << hValues <<std::endl;
+  std::cout<<"penedemonoooooo"<<std::endl;
+  Eigen::MatrixXd expectedValues(HIDDEN_LAYER_SIZE, OUTPUT_LAYER_SIZE);
+  for(int i=0; i<HIDDEN_LAYER_SIZE; i++){
+    for(int j=0; j<OUTPUT_LAYER_SIZE; j++){
+      expectedValues(i,j) = m_trainingImages[i].outputs[j];
+    }
+  }
+  std::cout<< expectedValues <<std::endl;
 }
