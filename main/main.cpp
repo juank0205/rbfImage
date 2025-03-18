@@ -6,6 +6,7 @@ int main(int argc, char *argv[]) {
 
   network.train("res/trainingImages");
   //network.printTrainingImages();
+  network.classify("res/1prueba2.png");
 
   return 0;
 }
