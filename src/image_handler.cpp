@@ -1,4 +1,5 @@
 #include "image_handler.h"
+#include "constants.h"
 
 #include <iostream>
 #include <stb_image.h>
@@ -17,7 +18,7 @@ int ImageHandler::loadImageAsBits(const char *filename,
   }
 
   if (width != IMAGE_WIDTH || height != IMAGE_HEIGHT) {
-    std::cerr << "Image is not 16x16" << std::endl;
+    std::cerr << "Image is not " << IMAGE_WIDTH << "x" << IMAGE_HEIGHT << std::endl;
     stbi_image_free(data);
     return 1;
   }

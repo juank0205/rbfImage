@@ -2,6 +2,7 @@
 #include "constants.h"
 
 #include <Eigen/Dense>
+#include <cmath>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -174,7 +175,7 @@ void NeuralNetwork::fastForward() {
           m_neurons[j].activationFunction(m_trainingImages[i].image);
     }
   }
-  std::cout<<"fastforward"<<std::endl;
+  std::cout << "fastforward" << std::endl;
 }
 
 void NeuralNetwork::solveWeightsMatrix() {
@@ -197,15 +198,36 @@ void NeuralNetwork::solveWeightsMatrix() {
   m_weightsMat = (hValues.completeOrthogonalDecomposition().pseudoInverse() *
                   expectedValues)
                      .transpose();
-  std::cout<<"matriz pesos\n"<<m_weightsMat<<std::endl;
+  std::cout << "matriz pesos\n" << m_weightsMat << std::endl;
 }
 
-void NeuralNetwork::classify(const char *inputImage) {
+int NeuralNetwork::classify(const char *inputImage) {
   std::array<unsigned char, INPUT_LAYER_SIZE> inputImageArr;
-  m_imageHandler.loadImageAsBits(inputImage, inputImageArr);
+
+  if (m_imageHandler.loadImageAsBits(inputImage, inputImageArr)) {
+    std::cout << "Failed to load image..." << std::endl;
+    return -1;
+  }
+
   Eigen::VectorXd activationValues(HIDDEN_LAYER_SIZE);
   for (int i = 0; i < HIDDEN_LAYER_SIZE; i++) {
     activationValues(i) = m_neurons[i].activationFunction(inputImageArr);
   }
-  std::cout << m_weightsMat * activationValues << std::endl;
+
+  auto results = m_weightsMat * activationValues;
+  std::cout << "Outputs: \n---------------------" << std::endl;
+  std::cout << results << "\n";
+  std::cout << "---------------------" << std::endl;
+
+  double max = results[0];
+  int maxIndex = 0;
+
+  for (int i = 1; i < OUTPUT_LAYER_SIZE; i++) {
+    if (results[i] > max) {
+      max = results[i];
+      maxIndex = i;
+    }
+  }
+
+  return maxIndex;
 }

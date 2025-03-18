@@ -18,7 +18,7 @@ public:
   ~NeuralNetwork();
 
   void train(const char *imagesDir);
-  void classify(const char *inputImage);
+  int classify(const char *inputImage);
 
   void printTrainingImages();
   void printNeurons();

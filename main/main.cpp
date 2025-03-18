@@ -1,17 +1,8 @@
-#include "neural_network.h"
-#include <Eigen/Dense>
-// #include <iostream>
+#include "application.h"
 
 int main(int argc, char *argv[]) {
-  NeuralNetwork network("res/locations");
-  // network.printNeurons();
-
-  network.train("res/trainingImages");
-  // //network.printTrainingImages();
-  network.classify("res/testImages/5.png");
-  // Eigen::MatrixXd m{{1, 1}, {0, 0}, {1, 1}};
-  // std::cout << m << "\n"
-  //<< m.completeOrthogonalDecomposition().pseudoInverse() << std::endl;
+  Application app;
+  app.start();
 
   return 0;
 }
