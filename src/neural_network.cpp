@@ -153,9 +153,9 @@ int NeuralNetwork::loadLocations(const char *locationsDir) {
   }
 
   if (locationsIndex != HIDDEN_LAYER_SIZE) {
-    std::cerr
-        << "Warning: locations.txt did not contain enough data. Loaded: "
-        << locationsIndex << " expected: " << HIDDEN_LAYER_SIZE << std::endl;
+    std::cerr << "Warning: locations.txt did not contain enough data. Loaded: "
+              << locationsIndex << " expected: " << HIDDEN_LAYER_SIZE
+              << std::endl;
   }
 
   return 0;
@@ -168,15 +168,12 @@ void NeuralNetwork::printNeurons() {
 }
 
 void NeuralNetwork::fastForward() {
-  std::cout << "hastadonde?" << std::endl;
   for (int i = 0; i < HIDDEN_LAYER_SIZE; i++) {
     for (int j = 0; j < HIDDEN_LAYER_SIZE; j++) {
-      std::cout << "uy" << std::endl;
       m_hiddenLayerActivationValues[i][j] =
           m_neurons[j].activationFunction(m_trainingImages[i].image);
     }
   }
-  std::cout << "hastadonde?" << std::endl;
 }
 
 void NeuralNetwork::solveWeightsMatrix() {
@@ -187,7 +184,6 @@ void NeuralNetwork::solveWeightsMatrix() {
     }
   }
   std::cout << hValues << std::endl;
-  std::cout << "penedemonoooooo" << std::endl;
   Eigen::MatrixXd expectedValues(HIDDEN_LAYER_SIZE, OUTPUT_LAYER_SIZE);
   for (int i = 0; i < HIDDEN_LAYER_SIZE; i++) {
     for (int j = 0; j < OUTPUT_LAYER_SIZE; j++) {
@@ -195,4 +191,23 @@ void NeuralNetwork::solveWeightsMatrix() {
     }
   }
   std::cout << expectedValues << std::endl;
+  std::cout << hValues.inverse() * expectedValues.transpose() << std::endl;
+  std::cout << hValues.completeOrthogonalDecomposition().pseudoInverse()
+            << std::endl;
+  m_weightsMat = (hValues.inverse() * expectedValues.transpose()).transpose();
+  for (int i = 0; i < OUTPUT_LAYER_SIZE; i++) {
+    for (int j = 0; j < HIDDEN_LAYER_SIZE; j++) {
+      m_weights[i][j] = m_weightsMat(i, j);
+    }
+  }
+}
+
+void NeuralNetwork::classify(const char *inputImage) {
+  std::array<unsigned char, 256> inputImageArr;
+  m_imageHandler.loadImageAsBits(inputImage, inputImageArr);
+  Eigen::VectorXd activationValues(HIDDEN_LAYER_SIZE);
+  for (int i = 0; i < HIDDEN_LAYER_SIZE; i++) {
+    activationValues(i) = m_neurons[i].activationFunction(inputImageArr);
+  }
+  std::cout << m_weightsMat * activationValues << std::endl;
 }

@@ -5,6 +5,7 @@
 #include "neuron.h"
 
 #include <array>
+#include <Eigen/Dense>
 
 struct TrainingData {
   std::array<unsigned char, 256> image;
@@ -28,6 +29,7 @@ private:
   std::array<Neuron, HIDDEN_LAYER_SIZE> m_neurons;
   std::array<std::array<double, HIDDEN_LAYER_SIZE>, OUTPUT_LAYER_SIZE>
       m_weights;
+  Eigen::MatrixXd m_weightsMat;
   std::array<std::array<double, HIDDEN_LAYER_SIZE>, INPUT_LAYER_SIZE>
       m_hiddenLayerActivationValues;
   bool m_areWeightsLoaded;
