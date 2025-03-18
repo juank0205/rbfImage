@@ -16,7 +16,7 @@ int ImageHandler::loadImageAsBits(const char *filename,
     return 1;
   }
 
-  if (width != 16 || height != 16) {
+  if (width != IMAGE_WIDTH || height != IMAGE_HEIGHT) {
     std::cerr << "Image is not 16x16" << std::endl;
     stbi_image_free(data);
     return 1;
