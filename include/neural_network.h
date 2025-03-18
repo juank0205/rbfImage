@@ -8,7 +8,7 @@
 #include <array>
 
 struct TrainingData {
-  std::array<unsigned char, 256> image;
+  std::array<unsigned char, INPUT_LAYER_SIZE> image;
   std::array<unsigned char, OUTPUT_LAYER_SIZE> outputs;
 };
 

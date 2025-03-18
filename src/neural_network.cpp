@@ -95,7 +95,7 @@ void NeuralNetwork::printTrainingImages() {
 
     // Print the image data (16x16 grid)
     std::cout << "Image Data:" << std::endl;
-    for (int j = 0; j < 256; ++j) {
+    for (int j = 0; j < INPUT_LAYER_SIZE; ++j) {
       std::cout << static_cast<int>(m_trainingImages[i].image[j]);
       if ((j + 1) % 16 == 0) {
         std::cout << std::endl;
@@ -174,6 +174,7 @@ void NeuralNetwork::fastForward() {
           m_neurons[j].activationFunction(m_trainingImages[i].image);
     }
   }
+  std::cout<<"fastforward"<<std::endl;
 }
 
 void NeuralNetwork::solveWeightsMatrix() {
@@ -183,24 +184,20 @@ void NeuralNetwork::solveWeightsMatrix() {
       hValues(i, j) = m_hiddenLayerActivationValues[i][j];
     }
   }
-  /*
   std::cout << hValues << std::endl;
-  */
   Eigen::MatrixXd expectedValues(TRAINING_DATA_SIZE, OUTPUT_LAYER_SIZE);
   for (int i = 0; i < TRAINING_DATA_SIZE; i++) {
     for (int j = 0; j < OUTPUT_LAYER_SIZE; j++) {
       expectedValues(i, j) = m_trainingImages[i].outputs[j];
     }
   }
-  /*
   std::cout << expectedValues << std::endl;
-  std::cout << hValues.inverse() * expectedValues.transpose() << std::endl;
   std::cout << hValues.completeOrthogonalDecomposition().pseudoInverse()
             << std::endl;
-  */
   m_weightsMat = (hValues.completeOrthogonalDecomposition().pseudoInverse() *
-                  expectedValues.transpose())
+                  expectedValues)
                      .transpose();
+  std::cout<<"matriz pesos\n"<<m_weightsMat<<std::endl;
 }
 
 void NeuralNetwork::classify(const char *inputImage) {

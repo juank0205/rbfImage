@@ -8,7 +8,7 @@ int main(int argc, char *argv[]) {
 
   network.train("res/trainingImages");
   // //network.printTrainingImages();
-  network.classify("res/dataToClassify/5prueba.png");
+  network.classify("res/testImages/5.png");
   // Eigen::MatrixXd m{{1, 1}, {0, 0}, {1, 1}};
   // std::cout << m << "\n"
   //<< m.completeOrthogonalDecomposition().pseudoInverse() << std::endl;
